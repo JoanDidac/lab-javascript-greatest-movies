@@ -95,10 +95,93 @@ function orderByYear(movies) {
   
 
 // Iteration 6: Alphabetic Order - Order by title and print the first 20 titles
-function orderAlphabetically(moviesArray) {}
+function orderAlphabetically(kakas) {
+
+    const sortedMovies = [...kakas].sort((a, b) => {
+      if (a.title < b.title) {
+        return -1;
+      }
+      if (a.title > b.title) {
+        return 1;
+      }
+          return 0;
+    });
+  
+    const titles = sortedMovies.map(kaka => kaka.title);
+  
+    return titles.slice(0, 20);
+  }
+  
 
 // BONUS - Iteration 7: Time Format - Turn duration of the movies from hours to minutes
-function turnHoursToMinutes(moviesArray) {}
+
+function turnHoursToMinutes(movies) {
+    return movies.map(function(movie) {
+      let duration = movie.duration;
+      let minutes = 0;
+      if (duration.includes('h') && duration.includes('min')) {
+         let time = duration.split(' ');
+        minutes += parseInt(time[0]) * 60;
+        minutes += parseInt(time[1]);
+      } else if (duration.includes('h')) { // 'h' esta definido en data.js idiota so 'hours' will never work...
+        minutes += parseInt(duration) * 60;
+      } else {
+        minutes += parseInt(duration);
+      }
+      let newMovie = Object.assign({}, movie);
+      newMovie.duration = minutes;
+      return newMovie;
+    });
+  }
+  
+//  Crea un nuevo movie obj con las mismas propiedades de el original pero con la duration modificada(Object.assign())
+
+// Se pasa un objecto vacio como primer argumento y el obj movie como segundo parametro para asegurar que el nuevo obj newMovie tiene las mismas propiedades que movie(new-duration) 
 
 // BONUS - Iteration 8: Best yearly score average - Best yearly score average
-function bestYearAvg(moviesArray) {}
+
+
+function bestYearAvg(movies) {
+    if (movies.length === 0) {
+      return null;
+    }
+  
+    // crea obj para almacenar avg de cada año
+    const scoresByYear = {};
+  
+    movies.forEach(movie => {
+      const year = movie.year;
+      const score = movie.score;
+  
+      if (!scoresByYear[year]) {
+        scoresByYear[year] = {
+          total: score,
+          count: 1
+        };
+      } else {
+        scoresByYear[year].total += score;
+        scoresByYear[year].count++;
+      }
+    });
+  
+    // calcular la media para cada año segun el score 
+    const averagesByYear = {};
+    for (const year in scoresByYear) {
+      averagesByYear[year] = scoresByYear[year].total / scoresByYear[year].count;
+    }
+    // filtra el año con la media mas alta ahora que estan ordenados
+    let bestYear = null;
+    let bestAvg = 0;
+    for (const year in averagesByYear) {
+      const avg = averagesByYear[year];
+      if (avg > bestAvg || (avg === bestAvg && year < bestYear)) {
+        bestYear = year;
+        bestAvg = avg;
+      }
+    }
+  
+    return `The best year has been ${bestYear} with an a score of ${bestAvg.toFixed(1)}`;
+  }
+
+
+  
